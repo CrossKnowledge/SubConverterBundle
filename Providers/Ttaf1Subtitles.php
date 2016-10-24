@@ -147,7 +147,7 @@ class Ttaf1Subtitles extends Subtitles
      */
     public function export($bom = false)
     {
-        $templateDir = '../Resources/ttaf1_templates/';
+        $templateDir = __DIR__ .'/../Resources/ttaf1_templates/';
 
         // Use template file
         if (!empty($this->template)) {

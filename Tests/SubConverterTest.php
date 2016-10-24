@@ -22,7 +22,6 @@ class SubConverterTest extends WebTestCase
     public function setUp()
     {
         $this->finder = new Finder();
-        $this->converter = \Framework::getInstance()->getSfContainer()->get('crossknowledge.subconverterbundle.converter');
     }
 
     /**
@@ -30,15 +29,18 @@ class SubConverterTest extends WebTestCase
      */
     public function testConvert2AllFormats($format)
     {
-        $resourcesPath = str_replace(basename(__FILE__), '', str_replace('\\', '/', __FILE__)) . 'resources/';
+        $resourcesPath = __DIR__ . '/resources/';
         $files = $this->finder->files()->in($resourcesPath);
         $originalFilename = $resourcesPath . 'lorem_subtitle.' . $format;
+
+        $converter = new ConverterService();
 
         // For each file (same subtitles in each format), we have to convert again and compare expected vs result value
         foreach ($files as $file) {
             if (file_exists($originalFilename)) {
-                $outputFilePath = TEMP_PATH.md5(uniqid('unit_tests_'));
-                $this->converter->convert($file, $outputFilePath, $format);
+                $outputFilePath = sys_get_temp_dir().'/'.md5(uniqid('unit_tests_'));
+                error_log($outputFilePath);
+                $converter->convert($file, $outputFilePath, $format);
 
                 $outputFileContent = file_get_contents($outputFilePath);
                 $originalFileContent = file_get_contents($originalFilename);

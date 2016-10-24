@@ -2,12 +2,12 @@
 
 namespace CrossKnowledge\SubConverterBundle;
 
-use CrossKnowledge\CoreBundle\Tests\CKWebTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use CrossKnowledge\SubConverterBundle\Providers\SubtitlesFactory;
 use CrossKnowledge\SubConverterBundle\Services\ConverterService;
 use Symfony\Component\Finder\Finder;
 
-class SubConverterTest extends CKWebTestCase
+class SubConverterTest extends WebTestCase
 {
     /**
      * @var ConverterService $converter

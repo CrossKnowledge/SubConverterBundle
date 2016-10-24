@@ -1,0 +1,32 @@
+{
+  "name": "crossknowledge/subconverter-bundle",
+  "description": "Implementation of subtitles converter with following supported formats: srt, webvtt, ttaf1, txt, tabtxt",
+  "type": "symfony-bundle",
+  "license": "MIT",
+  "keywords": [
+    "subtitle",
+    "converter",
+    "srt",
+    "webvtt",
+    "ttaf1",
+    "txt",
+    "tabtxt",
+    "Symfony2"
+  ],
+  "authors": [
+    {
+      "name": "Aymeric Poude",
+      "email": "aymeric.poude@crossknowledge.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": { "CrossKnowledge\\SubConverterBundle\\": "" }
+  },
+  "require": {
+    "php": ">=5.5",
+    "symfony/symfony": ">=2.6 <3.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~3.7"
+  }
+}

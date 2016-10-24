@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tt xml:lang="" xmlns="http://www.w3.org/2006/10/ttaf1" xmlns:ttp="http://www.w3.org/2006/10/ttaf1parameter" ttp:frameRate="25">
+	<head>
+		<metadata xmlns:ttm="http://www.w3.org/2006/10/ttaf1#metadata">
+			<ttm:title>Timed Text Podcast</ttm:title>
+			<ttm:copyright>CrossKnowledge(c)</ttm:copyright>
+		</metadata>
+		<styling xmlns:tts="http://www.w3.org/2006/10/ttaf1#style">
+			<style xml:id="principal" tts:color="black" tts:font="Arial Unicode MS" tts:fontSize="11px" tts:textAlign="center"/>
+		</styling>
+		<layout xmlns:tts="http://www.w3.org/2006/10/ttaf1#style">
+			<region xml:id="subtitleArea" style="principal" tts:extent="325px 37px" tts:padding="5px 1px" tts:backgroundColor="silver" tts:displayAlign="after" tts:opacity="0.60"/>
+		</layout>
+	</head>
+	<body region="subtitleArea">
+	</body>
+</tt>

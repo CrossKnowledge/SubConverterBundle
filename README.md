@@ -36,6 +36,15 @@ Now, to convert a subtitles file to a specific format, use can use the following
 ```php
   $this->get('crossknowledge.subconverterbundle.converter')->convert($inputFilePath, $outputFilePath, $outputFormat, $includeBom);
 ```
+Example:
+```php
+$inputFilePath // "/tmp/my_subtitle.srt"
+$outputFilePath // "/tmp/my_subtitle.webvtt"
+$outputFormat // ['srt'|'webvtt'|'ttaf1'|'txt']
+$includeBom // [true|false]
+```
+
+Available output formats: 'srt', 'webvtt','ttaf1', 'txt'
 
 License
 -------

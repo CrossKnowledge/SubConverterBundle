@@ -131,7 +131,7 @@ class Ttaf1Subtitles extends Subtitles
             $this->subtitles[] = array(
                 'from' => $from,
                 'to' => $to,
-                'text' => trim($text, " \t\r\n"),
+                'text' => trim(self::htmlToText($text), " \t\r\n"),
             );
         }
 
@@ -264,7 +264,7 @@ class Ttaf1Subtitles extends Subtitles
             $subtitleXml->appendXML(
                 '<p xml:id="subtitle'.$i.'" begin="'.round($row['from'] * $fps).'f" end="'.round(
                     $row['to'] * $fps
-                ).'f">'.$row['text'].'</p>'
+                ).'f">'.htmlspecialchars($row['text']).'</p>'
             );
             $containerNode->appendChild($subtitleXml->firstChild);
             $i++;

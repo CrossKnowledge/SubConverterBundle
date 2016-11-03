@@ -141,7 +141,7 @@ abstract class Subtitles
      */
     public static function textToHtml($str)
     {
-        return str_replace("\n", "", nl2br(htmlspecialchars($str)));
+        return str_replace("\n", "", nl2br($str));
     }
 
     /**

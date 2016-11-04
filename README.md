@@ -1,4 +1,6 @@
-[![Build Status](https://api.travis-ci.org/CrossKnowledge/SubConverterBundle.svg?branch=master)](https://travis-ci.org/CrossKnowledge/SubConverterBundle) [![Total Downloads](https://poser.pugx.org/crossknowledge/subconverter-bundle/downloads.svg)](https://packagist.org/packages/crossknowledge/subconverter-bundle)
+[![Build Status](https://api.travis-ci.org/CrossKnowledge/SubConverterBundle.svg?branch=master)](https://travis-ci.org/CrossKnowledge/SubConverterBundle)
+[![Code Climate](https://codeclimate.com/github/CrossKnowledge/SubConverterBundle.svg)](https://codeclimate.com/github/CrossKnowledge/SubConverterBundle)
+[![Total Downloads](https://poser.pugx.org/crossknowledge/subconverter-bundle/downloads.svg)](https://packagist.org/packages/crossknowledge/subconverter-bundle)
 
 CrossKnowledge SubConverter Bundle
 ===============================

@@ -48,3 +48,6 @@
 */Entity/*~
 /.project
 /.idea
+
+# PHPUnit test logs
+/logs/

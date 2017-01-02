@@ -42,8 +42,10 @@ class SubConverterTest extends WebTestCase
                 error_log($outputFilePath);
                 $converter->convert($file, $outputFilePath, $format);
 
-                $outputFileContent = file_get_contents($outputFilePath);
-                $originalFileContent = file_get_contents($originalFilename);
+                // The conversion of the files produces \n\n in the end
+                // We trim that to be able to check with original files correctly
+                $outputFileContent = trim(file_get_contents($outputFilePath));
+                $originalFileContent = trim(file_get_contents($originalFilename));
 
                 $this->assertEquals(
                     $originalFileContent,

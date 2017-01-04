@@ -17,7 +17,9 @@ class SubRipSubtitles extends Subtitles
         $contents = str_replace("\r", "", self::removeBom(file_get_contents($filename)));
 
         return preg_match(
-            "/^([0-9]+[[:space:]]*\n[0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3} --> [0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3}[[:space:]]*\n(.+\n)+\n)+/mU",
+            "/^([0-9]+[[:space:]]*\n" .
+            "[0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3} --> [0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3}[[:space:]]*\n" .
+            "(.+\n\n|.+\Z))+/mU",
             $contents,
             $matches
         );
@@ -38,7 +40,9 @@ class SubRipSubtitles extends Subtitles
         $contents = str_replace("\r", "", self::forceUtf8(file_get_contents($filename)));
 
         preg_match_all(
-            "/^([0-9]+)[[:space:]]*\n([0-9]{2}):([0-9]{2}):([0-9]{2}),([0-9]{3}) --> ([0-9]{2}):([0-9]{2}):([0-9]{2}),([0-9]{3})[[:space:]]*\n((.+\n)+)$/mU",
+            "/^([0-9]+)[[:space:]]*\n" .
+            "([0-9]{2}):([0-9]{2}):([0-9]{2}),([0-9]{3}) --> ([0-9]{2}):([0-9]{2}):([0-9]{2}),([0-9]{3})[[:space:]]*\n" .
+            "(.+\n\n|.+\Z)/smU",
             $contents,
             $matches,
             PREG_SET_ORDER

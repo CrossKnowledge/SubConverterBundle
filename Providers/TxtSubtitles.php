@@ -18,7 +18,7 @@ class TxtSubtitles extends Subtitles
 
         return preg_match(
             "/([0-9]+\)[[:space:]]*[0-9]{2}:[0-9]{2}:[0-9]{2}:[0-9]{2}[[:space:]]+[0-9]{2}:[0-9]{2}:[0-9]{2}:[0-9]{2}.*\n" .
-            "(.+\n\n|.+\Z))+/mU",
+            "(.+\n\n|.+\Z))+/smU",
             $contents
         );
     }

@@ -19,7 +19,7 @@ class SubRipSubtitles extends Subtitles
         return preg_match(
             "/^([0-9]+[[:space:]]*\n" .
             "[0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3} --> [0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3}[[:space:]]*\n" .
-            "(.+\n\n|.+\Z))+/mU",
+            "(.+\n\n|.+\Z))+/smU",
             $contents,
             $matches
         );

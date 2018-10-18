@@ -34,9 +34,9 @@ class WebVttSubtitles extends Subtitles
         $contents = str_replace("\r", "", self::forceUtf8(file_get_contents($filename)));
 
         preg_match_all(
-            "/([0-9]+)[[:space:]]*\n" .
-            "([0-9]{2}):([0-9]{2}):([0-9]{2})\.([0-9]{3}) --> ([0-9]{2}):([0-9]{2}):([0-9]{2})\.([0-9]{3})[[:space:]]*\n" .
-            "(.+\n\n|.+\Z)/smU",
+            "/([0-9]+)[[:space:]]*\n".
+            "((?P<startHours>[0-9]{2}):)?(?P<startMinutes>[0-9]{2}):(?P<startSeconds>[0-9]{2})\.(?P<startMilliseconds>[0-9]{3}) --> ((?P<endHours>[0-9]{2}):)?(?P<endMinutes>[0-9]{2}):(?P<endSeconds>[0-9]{2})\.(?P<endMilliSeconds>[0-9]{3})[[:space:]]*\n".
+            "(?P<subtitle>.+\n\n|.+\Z)/smU",
             $contents,
             $matches,
             PREG_SET_ORDER
@@ -46,18 +46,23 @@ class WebVttSubtitles extends Subtitles
             throw new \Exception("Invalid WebVTT file: ".basename($filename));
         }
 
-        $this->subtitles = array();
+        $this->subtitles = [];
+
 
         foreach ($matches as $aMatch) {
-            $timeFrom = 3600 * $aMatch[2] + 60 * $aMatch[3] + $aMatch[4] + ('0.'.$aMatch[5]);
-            $timeTo = 3600 * $aMatch[6] + 60 * $aMatch[7] + $aMatch[8] + ('0.'.$aMatch[9]);
-            $text = trim($aMatch[10], " \t\r\n");
 
-            $this->subtitles[] = array(
+            $timeFromHour = empty($aMatch['startHours']) ? 0 : $aMatch['startHour'];
+            $timeEndHour  = empty($aMatch['endHours']) ? 0 : $aMatch['endHour'];
+
+            $timeFrom = 3600 * $timeFromHour + 60 * $aMatch['startMinutes'] + $aMatch['startSeconds'] + (float)('0.'.$aMatch['startMilliseconds']);
+            $timeTo   = 3600 * $timeEndHour + 60 * $aMatch['endMinutes'] + $aMatch['endSeconds'] + (float)('0.'.$aMatch['endMilliSeconds']);
+            $text     = trim($aMatch['subtitle'], " \t\r\n");
+
+            $this->subtitles[] = [
                 'from' => $timeFrom,
-                'to' => $timeTo,
+                'to'   => $timeTo,
                 'text' => self::textToHtml($text),
-            );
+            ];
         }
 
         return $this;
@@ -99,3 +104,4 @@ class WebVttSubtitles extends Subtitles
 }
 
 ?>
+

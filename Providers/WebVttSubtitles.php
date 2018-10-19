@@ -51,8 +51,8 @@ class WebVttSubtitles extends Subtitles
 
         foreach ($matches as $aMatch) {
 
-            $timeFromHour = empty($aMatch['startHours']) ? 0 : $aMatch['startHour'];
-            $timeEndHour  = empty($aMatch['endHours']) ? 0 : $aMatch['endHour'];
+            $timeFromHour = empty($aMatch['startHours']) ? 0 : $aMatch['startHours'];
+            $timeEndHour  = empty($aMatch['endHours']) ? 0 : $aMatch['endHours'];
 
             $timeFrom = 3600 * $timeFromHour + 60 * $aMatch['startMinutes'] + $aMatch['startSeconds'] + (float)('0.'.$aMatch['startMilliseconds']);
             $timeTo   = 3600 * $timeEndHour + 60 * $aMatch['endMinutes'] + $aMatch['endSeconds'] + (float)('0.'.$aMatch['endMilliSeconds']);

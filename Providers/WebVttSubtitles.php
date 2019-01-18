@@ -34,7 +34,7 @@ class WebVttSubtitles extends Subtitles
         $contents = str_replace("\r", "", self::forceUtf8(file_get_contents($filename)));
 
         preg_match_all(
-            "/([0-9]+)[[:space:]]*\n".
+            "/([0-9]+)*[[:space:]]*\n".
             "((?P<startHours>[0-9]{2}):)?(?P<startMinutes>[0-9]{2}):(?P<startSeconds>[0-9]{2})\.(?P<startMilliseconds>[0-9]{3}) --> ((?P<endHours>[0-9]{2}):)?(?P<endMinutes>[0-9]{2}):(?P<endSeconds>[0-9]{2})\.(?P<endMilliSeconds>[0-9]{3})[[:space:]]*\n".
             "(?P<subtitle>.+\n\n|.+\Z)/smU",
             $contents,

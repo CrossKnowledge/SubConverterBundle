@@ -1,4 +1,4 @@
 services:
-  crossknowledge.subconverterbundle.converter:
-    class: CrossKnowledge\SubConverterBundle\Services\ConverterService
-    arguments: ["input_file_path", "output_file_path", "output_format", "options"]
+    crossknowledge.subconverterbundle.converter:
+        class: CrossKnowledge\SubConverterBundle\Services\ConverterService
+        arguments: ["input_file_path", "output_file_path", "output_format", "options"]

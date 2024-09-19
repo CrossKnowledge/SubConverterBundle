@@ -2,6 +2,12 @@
 
 namespace CrossKnowledge\SubConverterBundle\Providers;
 
+use DOMDocument;
+use DOMElement;
+use DOMNode;
+use DOMXPath;
+use Exception;
+
 /**
  * TTAF1 subtitles class
  */
@@ -9,28 +15,23 @@ class Ttaf1Subtitles extends Subtitles
 {
     /**
      * Path to XML template for export
-     * @var string
      */
-    public $template = null;
+    public ?string $template = null;
 
     /**
      * Subtitle set title
-     * @var string
      */
-    public $title = null;
+    public ?string $title = null;
 
     /**
      * Copyright info
-     * @var string
      */
-    public $copyright = null;
+    public ?string $copyright = null;
 
     /**
-     * Return true if the provided file is in the current format
-     * @param string $filename
-     * @return boolean
+     * @inheritDoc
      */
-    public function checkFormat($filename)
+    public function checkFormat(string $filename): bool
     {
         $xml = self::loadXml($filename);
         if (empty($xml)) {
@@ -41,7 +42,7 @@ class Ttaf1Subtitles extends Subtitles
             return false;
         }
 
-        $xPath = new \DOMXPath($xml);
+        $xPath = new DOMXPath($xml);
         $xPath->registerNamespace('x', $xml->lookupNamespaceUri($xml->namespaceURI));
 
         $bodyNodes = $xPath->query('/x:tt/x:body');
@@ -53,21 +54,17 @@ class Ttaf1Subtitles extends Subtitles
     }
 
     /**
-     * Import the provided file
-     *
-     * @param string $filename
-     * @return Subtitles
-     * @throws \Exception
+     * @inheritDoc
      */
-    public function import($filename)
+    public function import(string $filename): Subtitles
     {
         if (!$this->checkFormat($filename)) {
-            throw new \Exception("Invalid TTAF1 file: ".basename($filename));
+            throw new Exception("Invalid TTAF1 file: ".basename($filename));
         }
 
         $xml = self::loadXml($filename);
 
-        $xPath = new \DOMXPath($xml);
+        $xPath = new DOMXPath($xml);
         $xPath->registerNamespace('x', $xml->lookupNamespaceUri($xml->namespaceURI));
 
         $ttNode = $xml->getElementsByTagName('tt')->item(0);
@@ -108,19 +105,19 @@ class Ttaf1Subtitles extends Subtitles
         }
 
         // Get subtitles
-        $this->subtitles = array();
+        $this->subtitles = [];
         $pNodes = $bodyNode->getElementsByTagName('p');
         foreach ($pNodes as $aPNode) {
             if (preg_match('/^([0-9]+)f/i', $aPNode->getAttribute('begin'), $matches)) {
                 $from = $matches[1] / $fps;
             } else {
-                throw new \Exception("Invalid begin value for slide ".$aPNode->getAttribute('xml:id'));
+                throw new Exception('Invalid begin value for slide ' . $aPNode->getAttribute('xml:id'));
             }
 
             if (preg_match('/^([0-9]+)f/i', $aPNode->getAttribute('end'), $matches)) {
                 $to = $matches[1] / $fps;
             } else {
-                throw new \Exception("Invalid begin value for slide ".$aPNode->getAttribute('xml:id'));
+                throw new Exception('Invalid begin value for slide ' . $aPNode->getAttribute('xml:id'));
             }
 
             $text = '';
@@ -128,31 +125,28 @@ class Ttaf1Subtitles extends Subtitles
                 $text .= $xml->saveXml($aTextNode);
             }
 
-            $this->subtitles[] = array(
+            $this->subtitles[] = [
                 'from' => $from,
                 'to' => $to,
                 'text' => trim(self::htmlToText($text), " \t\r\n"),
-            );
+            ];
         }
 
         return $this;
     }
 
     /**
-     * Export the subtitles in the current format
-     *
-     * @param boolean $bom Add UTF-8 BOM
-     * @return string
-     * @throws \Exception
+     * @inheritDoc
+     * @throws Exception
      */
-    public function export($bom = false)
+    public function export(bool $bom = false): string
     {
         $templateDir = __DIR__ .'/../Resources/ttaf1_templates/';
 
         // Use template file
         if (!empty($this->template)) {
             // Predefined template ?
-            $predefinedTemplateFile = $templateDir.strtolower($this->template).'.xml';
+            $predefinedTemplateFile = $templateDir . strtolower($this->template) . '.xml';
             if (file_exists($predefinedTemplateFile) && is_file($predefinedTemplateFile)) {
                 $templateFile = $predefinedTemplateFile;
             } else {
@@ -161,21 +155,21 @@ class Ttaf1Subtitles extends Subtitles
 
             // Check if file exists
             if (!file_exists($templateFile) || !is_file($templateFile)) {
-                throw new \Exception("The template file \"".basename($templateFile)."\" could not be found.");
+                throw new Exception("The template file \"" . basename($templateFile) . "\" could not be found.");
             }
 
             // Check format
             if (!$this->checkFormat($templateFile)) {
-                throw new \Exception("The template file \"".basename($templateFile)."\" is not a valid TTAF1 file.");
+                throw new Exception("The template file \"" . basename($templateFile) . "\" is not a valid TTAF1 file.");
             }
         } else {
-            $templateFile = $templateDir.'default.xml';
+            $templateFile = $templateDir . 'default.xml';
         }
 
         // Load template
         $xml = self::loadXml($templateFile);
 
-        $xPath = new \DOMXPath($xml);
+        $xPath = new DOMXPath($xml);
         $xPath->registerNamespace('x', $xml->lookupNamespaceUri($xml->namespaceURI));
 
         // Get framerate
@@ -198,7 +192,7 @@ class Ttaf1Subtitles extends Subtitles
         if ($headNodes->length > 0) {
             $headNode = $headNodes->item(0);
         } else {
-            $headNode = $ttNode->appendChild(new \DOMElement('head'));
+            $headNode = $ttNode->appendChild(new DOMElement('head'));
         }
 
         // Set metadata
@@ -206,7 +200,7 @@ class Ttaf1Subtitles extends Subtitles
         if ($metadataNodes->length > 0) {
             $metadataNode = $metadataNodes->item(0);
         } else {
-            $metadataNode = $headNode->appendChild(new \DOMElement('metadata'));
+            $metadataNode = $headNode->appendChild(new DOMElement('metadata'));
             $metadataNode->setAttributeNS(
                 'http://www.w3.org/2000/xmlns/',
                 'xmlns:ttm',
@@ -254,7 +248,7 @@ class Ttaf1Subtitles extends Subtitles
         }
 
         // Create subtitles container
-        $containerNode = new \DOMElement('div');
+        $containerNode = new DOMElement('div');
         $bodyNode->appendChild($containerNode);
 
         // Add subtitles
@@ -262,9 +256,9 @@ class Ttaf1Subtitles extends Subtitles
         foreach ($this->subtitles as $row) {
             $subtitleXml = $xml->createDocumentFragment();
             $subtitleXml->appendXML(
-                '<p xml:id="subtitle'.$i.'" begin="'.round($row['from'] * $fps).'f" end="'.round(
+                '<p xml:id="subtitle' . $i . '" begin="' . round($row['from'] * $fps) . 'f" end="' . round(
                     $row['to'] * $fps
-                ).'f">'.htmlspecialchars($row['text']).'</p>'
+                ) . 'f">' . htmlspecialchars($row['text']) . '</p>'
             );
             $containerNode->appendChild($subtitleXml->firstChild);
             $i++;
@@ -279,23 +273,22 @@ class Ttaf1Subtitles extends Subtitles
     }
 
     /**
-     * Return file extension for the current format
-     * @return string
+     * @inheritDoc
      */
-    public function getFileExt()
+    public function getFileExt(): string
     {
         return 'xml';
     }
 
     /**
      * Replace the value of the given node
-     * @param \DOMNode $node
-     * @param string $tagname
-     * @param string $value
-     * @param string $namespaceUri
      */
-    protected static function replaceNodeValue($node, $tagname, $value, $namespaceUri = null)
-    {
+    protected static function replaceNodeValue(
+        DOMNode $node,
+        string $tagname,
+        string $value,
+        string $namespaceUri = null
+    ) {
         if ($namespaceUri) {
             $newNode = $node->ownerDocument->createElementNS($namespaceUri, $tagname, $value);
             $nodes = $node->getElementsByTagNameNS($namespaceUri, preg_replace('/^.+\\:/', '', $tagname));
@@ -313,22 +306,18 @@ class Ttaf1Subtitles extends Subtitles
 
     /**
      * Safely load an UTF-8 XML file, handling missing header.
-     * @param string $filename
-     * @return \DOMDocument
      */
-    protected static function loadXml($filename)
+    protected static function loadXml($filename): DOMDocument
     {
         $strXml = trim(self::forceUtf8(file_get_contents($filename)));
         if (!preg_match('/^[^<]*<\?xml /i', $strXml)) // Take care of this damn UTF-8 BOM
         {
-            $strXml = '<?xml version="1.0" encoding="utf-8"?>'.$strXml;
+            $strXml = '<?xml version="1.0" encoding="utf-8"?>' . $strXml;
         }
 
-        $xml = new \DOMDocument('1.0', 'UTF-8');
+        $xml = new DOMDocument('1.0', 'UTF-8');
         @$xml->loadXML($strXml);
 
         return $xml;
     }
 }
-
-?>

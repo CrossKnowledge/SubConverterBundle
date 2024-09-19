@@ -2,36 +2,33 @@
 
 namespace CrossKnowledge\SubConverterBundle\Providers;
 
+use Exception;
+
 /**
  * Web VTT subtitles class
  */
 class WebVttSubtitles extends Subtitles
 {
     /**
-     * Return true if the provided file is in the current format
-     * @param string $filename
-     * @return boolean
+     * @inheritDoc
      */
-    public function checkFormat($filename)
+    public function checkFormat(string $filename): bool
     {
         $contents = str_replace("\r", "", self::removeBom(file_get_contents($filename)));
 
-        return preg_match("/^WEBVTT\n+/mU", $contents, $matches);
+        return preg_match("/^WEBVTT\n+/mU", $contents);
     }
 
     /**
-     * Import the provided file
-     * @param string $filename
-     * @return Subtitles
-     * @throws \Exception
+     * @inheritDoc
      */
-    public function import($filename)
+    public function import(string $filename): Subtitles
     {
         if (!$this->checkFormat($filename)) {
-            throw new \Exception("Invalid WebVTT file: ".basename($filename));
+            throw new Exception('Invalid WebVTT file: ' . basename($filename));
         }
 
-        $contents = str_replace("\r", "", self::forceUtf8(file_get_contents($filename)));
+        $contents = str_replace("\r", '', self::forceUtf8(file_get_contents($filename)));
 
         preg_match_all(
             "/([0-9]+)*[[:space:]]*\n".
@@ -43,19 +40,17 @@ class WebVttSubtitles extends Subtitles
         );
 
         if (empty($matches)) {
-            throw new \Exception("Invalid WebVTT file: ".basename($filename));
+            throw new Exception('Invalid WebVTT file: ' . basename($filename));
         }
 
         $this->subtitles = [];
 
-
         foreach ($matches as $aMatch) {
-
             $timeFromHour = empty($aMatch['startHours']) ? 0 : $aMatch['startHours'];
             $timeEndHour  = empty($aMatch['endHours']) ? 0 : $aMatch['endHours'];
 
-            $timeFrom = 3600 * $timeFromHour + 60 * $aMatch['startMinutes'] + $aMatch['startSeconds'] + (float)('0.'.$aMatch['startMilliseconds']);
-            $timeTo   = 3600 * $timeEndHour + 60 * $aMatch['endMinutes'] + $aMatch['endSeconds'] + (float)('0.'.$aMatch['endMilliSeconds']);
+            $timeFrom = 3600 * $timeFromHour + 60 * $aMatch['startMinutes'] + $aMatch['startSeconds'] + (float)('0.' . $aMatch['startMilliseconds']);
+            $timeTo   = 3600 * $timeEndHour + 60 * $aMatch['endMinutes'] + $aMatch['endSeconds'] + (float)('0.' . $aMatch['endMilliSeconds']);
             $text     = trim($aMatch['subtitle'], " \t\r\n");
 
             $this->subtitles[] = [
@@ -69,11 +64,9 @@ class WebVttSubtitles extends Subtitles
     }
 
     /**
-     * Export the subtitles in the current format
-     * @param boolean $bom Add UTF-8 BOM
-     * @return string
+     * @inheritDoc
      */
-    public function export($bom = false)
+    public function export(bool $bom = false): string
     {
         $webvtt = "WEBVTT\n\n";
 
@@ -94,14 +87,10 @@ class WebVttSubtitles extends Subtitles
     }
 
     /**
-     * Return file extension for the current format
-     * @return string
+     * @inheritDoc
      */
-    public function getFileExt()
+    public function getFileExt(): string
     {
         return 'vtt';
     }
 }
-
-?>
-

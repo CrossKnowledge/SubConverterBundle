@@ -2,19 +2,19 @@
 
 namespace CrossKnowledge\SubConverterBundle\Providers;
 
+use Exception;
+
 /**
  * Plain text subtitles class
  */
 class TxtSubtitles extends Subtitles
 {
     /**
-     * Return true if the provided file is in the current format
-     * @param string $filename
-     * @return boolean
+     * @inheritDoc
      */
-    public function checkFormat($filename)
+    public function checkFormat(string $filename): bool
     {
-        $contents = str_replace("\r", "", self::removeBom(file_get_contents($filename)));
+        $contents = str_replace("\r", '', self::removeBom(file_get_contents($filename)));
 
         return preg_match(
             "/([0-9]+\)[[:space:]]*[0-9]{2}:[0-9]{2}:[0-9]{2}:[0-9]{2}[[:space:]]+[0-9]{2}:[0-9]{2}:[0-9]{2}:[0-9]{2}.*\n" .
@@ -24,15 +24,12 @@ class TxtSubtitles extends Subtitles
     }
 
     /**
-     * Import the provided file
-     * @param string $filename
-     * @return Subtitles
-     * @throws \Exception
+     * @inheritDoc
      */
-    public function import($filename)
+    public function import(string $filename): Subtitles
     {
         if (!$this->checkFormat($filename)) {
-            throw new \Exception("Invalid text file: ".basename($filename));
+            throw new Exception('Invalid text file: ' . basename($filename));
         }
 
         $contents = str_replace("\r", "", self::forceUtf8(file_get_contents($filename)));
@@ -46,7 +43,7 @@ class TxtSubtitles extends Subtitles
         );
 
         if (empty($matches)) {
-            throw new \Exception("Invalid text file: ".basename($filename));
+            throw new Exception('Invalid text file: ' . basename($filename));
         }
 
         if (empty($this->framerate)) {
@@ -56,29 +53,27 @@ class TxtSubtitles extends Subtitles
             $fps = $this->framerate;
         }
 
-        $this->subtitles = array();
+        $this->subtitles = [];
 
         foreach ($matches as $aMatch) {
             $timeFrom = 3600 * $aMatch[2] + 60 * $aMatch[3] + $aMatch[4] + $aMatch[5] / $fps;
             $timeTo = 3600 * $aMatch[6] + 60 * $aMatch[7] + $aMatch[8] + $aMatch[9] / $fps;
             $text = trim($aMatch[10], " \t\r\n");
 
-            $this->subtitles[] = array(
+            $this->subtitles[] = [
                 'from' => $timeFrom,
                 'to' => $timeTo,
                 'text' => self::textToHtml($text),
-            );
+            ];
         }
 
         return $this;
     }
 
     /**
-     * Export the subtitles in the current format
-     * @param boolean $bom Add UTF-8 BOM
-     * @return string
+     * @inheritDoc
      */
-    public function export($bom = false)
+    public function export(bool $bom = false): string
     {
         $txt = '';
 
@@ -106,13 +101,10 @@ class TxtSubtitles extends Subtitles
     }
 
     /**
-     * Return file extension for the current format
-     * @return string
+     * @inheritDoc
      */
-    public function getFileExt()
+    public function getFileExt(): string
     {
         return 'txt';
     }
 }
-
-?>

@@ -1,6 +1,6 @@
 <?php
 
-namespace CrossKnowledge\SubConverterBundle;
+namespace CrossKnowledge\SubConverterBundle\Tests;
 
 use CrossKnowledge\SubConverterBundle\Services\ConverterService;
 use PHPUnit\Framework\TestCase;
@@ -8,14 +8,11 @@ use Symfony\Component\Finder\Finder;
 
 class SubConverterTest extends TestCase
 {
-    /** @var string */
     const RESOURCES_PATH = __DIR__ . '/resources/';
 
-    /** @var ConverterService */
-    private static $converter;
+    private static ConverterService $converter;
 
-    /** @var Finder */
-    private static $files;
+    private static Finder $files;
 
     /**
      * Set up the required data for the TestCase.
@@ -53,7 +50,7 @@ class SubConverterTest extends TestCase
         // For each file (same subtitles in each format), we have to convert again and compare expected vs result value
         foreach (self::$files as $file) {
             if (file_exists($originalFilename)) {
-                $outputFilePath = sys_get_temp_dir().'/'.md5(uniqid('unit_tests_'));
+                $outputFilePath = sys_get_temp_dir() . '/' . md5(uniqid('unit_tests_'));
                 self::$converter->convert($file, $outputFilePath, $format);
 
                 // The conversion of the files produces \n\n in the end
@@ -64,11 +61,10 @@ class SubConverterTest extends TestCase
                 $this->assertEquals(
                     $originalFileContent,
                     $outputFileContent,
-                    'File conversion failed from '.$originalFilename.' to '.strtoupper($format)
+                    'File conversion failed from ' . $originalFilename . ' to ' . strtoupper($format)
                 );
-            }
-            else {
-                $this->assertTrue(false, $originalFilename . ' file is missing');
+            } else {
+                $this->fail($originalFilename . ' file is missing');
             }
         }
     }

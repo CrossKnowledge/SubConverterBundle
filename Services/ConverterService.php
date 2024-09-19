@@ -1,37 +1,35 @@
 <?php
 
-
 namespace CrossKnowledge\SubConverterBundle\Services;
 
-
 use CrossKnowledge\SubConverterBundle\Providers\SubtitlesFactory;
+use Exception;
 
 class ConverterService
 {
-    public function convert($input_file_path, $output_file_path, $output_format, $includeBom = false)
+    public function convert($inputFilePath, $outputFilePath, $outputFormat, $includeBom = false)
     {
         try {
-            if (!file_exists($input_file_path)) {
-                throw new \Exception($input_file_path . ' does not exist.');
+            if (!file_exists($inputFilePath)) {
+                throw new Exception($inputFilePath . ' does not exist.');
             }
 
-            if (!is_file($input_file_path)) {
-                throw new \Exception($input_file_path . ' is not a file.');
+            if (!is_file($inputFilePath)) {
+                throw new Exception($inputFilePath . ' is not a file.');
             }
 
-            $st = SubtitlesFactory::getInstanceFromFile($input_file_path);
+            $st = SubtitlesFactory::getInstanceFromFile($inputFilePath);
             if (empty($st)) {
-                throw new \Exception('Unknown file type.');
+                throw new Exception('Unknown file type.');
             }
 
             // Convert to target format
-            $stOut = $st->import($input_file_path)->convert($output_format);
+            $stOut = $st->import($inputFilePath)->convert($outputFormat);
 
-            if (!file_put_contents($output_file_path, $stOut->export($includeBom))) {
-                throw new \Exception('Could not write file.');
+            if (!file_put_contents($outputFilePath, $stOut->export($includeBom))) {
+                throw new Exception('Could not write file.');
             }
-
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             echo $e->getMessage();
         }
     }

@@ -40,5 +40,11 @@
       "cache:clear": "symfony-cmd",
       "assets:install %PUBLIC_DIR%": "symfony-cmd"
     }
+  },
+  "extra": {
+    "symfony": {
+      "allow-contrib": false,
+      "require": "5.4.*"
+    }
   }
 }
